@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
@@ -36,14 +31,20 @@ var srv = http.createServer(app).listen(app.get('port'), function(){
 
 var socketMap = {};
 var counter = 0;
+
 var io = require('socket.io').listen(srv);
 io.sockets.on('connection', function(socket) {
 	counter++;
 	var id = socket.id ;
-	io.sockets.emit('newUser',{ id : id  });
+	socketMap[id]=socket;
+	io.sockets.emit('userChange',{ idList : Object.keys(socketMap)  });
 	socket.on('disconnect',function(){
 		delete socketMap[socket.id];
+		io.sockets.emit('userChange',{ idList : Object.keys(socketMap) });
 		counter--;
 	});
+	
+	socket.on('mouseMove', function(data){
+		io.sockets.emit('mouseMove', { id : this.id , x : data.x , y : data.y } );
+	});
 }); 
-
