@@ -46,7 +46,7 @@ function dot(id) {
 		$(div).css('top',Math.random() * 600);
 		$(div).css('left',Math.random() * 600);
 	}
-}
+}  
 
 function onUserChange(data) {
 	console.log(arguments);
